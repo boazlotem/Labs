@@ -38,7 +38,7 @@ public class Validate extends Thread {
         // If a matching user is found, check the password and handle login attempts and lockout logic
         if(temp!=null) {
             if(temp.isLockedOut()) {
-                Platform.runLater(() -> controller.showError("Account is locked. Please try again later."));
+                    Platform.runLater(() -> controller.showError("Account is locked. Please try again later."));
                 return;
             }
             if (temp.getPassword().equals(inputPassword)) {
@@ -46,7 +46,7 @@ public class Validate extends Thread {
                 temp.resetAttempts();
             } else {
                 Platform.runLater(() -> controller.showError("Login Failed! Invalid password"));
-                CheckLock checkLockThread = new CheckLock(temp, n, time);
+                CheckLock checkLockThread = new CheckLock(temp, n, time, this.controller);
                 checkLockThread.start();
             }
         }
