@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.lab2.LoginController">
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.lab3.LoginController">
    <center>
       <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
         <columnConstraints>
@@ -42,7 +42,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Button>
-            <Label fx:id="statusLabel" textFill="RED">
+            <Label fx:id="statusLabel" textAlignment="CENTER" textFill="RED">
                <font>
                   <Font name="Calibri Bold Italic" size="12.0" />
                </font></Label>

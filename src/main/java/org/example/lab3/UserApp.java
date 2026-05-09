@@ -1,5 +1,5 @@
-package org.example.lab2;
-import javafx.application.Application;
+package org.example.lab3;
+import  javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -18,6 +18,15 @@ public class UserApp extends Application
     private static final Pattern passwordPATTERN= Pattern.compile(passwordREGEX);
     // list to store the valid users
     private static final List<User> userList=new ArrayList<>();
+    private static int n;
+    private static int time;
+    public static int getN() {
+        return n;
+    }
+    public static int getTime() {
+        return time;
+    }
+
     public static List<User> getUserList() {
         return userList;
     }
@@ -70,7 +79,7 @@ public class UserApp extends Application
             System.out.println("Error: Users.txt file not found.");
         }
     }
-    // This method checks if the provided username and password are valid according to the defined patterns and length requirements. It throws custom exceptions with specific error messages if any of the validation checks fail, and returns a User object if the input is valid.
+    // This method checks if the given username and password are valid according to the specified patterns and length requirements. It throws an InvalidInputException with an appropriate message if any of the checks fail, and returns a new User object if both the username and password are valid.
     public static User checkUser(String user_name, String password)
     {
         int USER_MAX_LENGTH = 50;
@@ -119,14 +128,19 @@ public class UserApp extends Application
         }
     }
     @Override
-
     public void start(Stage stage) throws IOException {
         loadUsersFromFile();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter max failed attempts (n): ");
+        n = scanner.nextInt();
+        System.out.print("Please enter lockout duration in seconds (t): ");
+        time = scanner.nextInt();
         FXMLLoader fxmlLoader = new FXMLLoader(UserApp.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("User Login");
         LoginController controller = fxmlLoader.getController();
         controller.setUsers(userList);
+        controller.setParams(n, time);
         stage.setScene(scene);
         stage.show();
     }

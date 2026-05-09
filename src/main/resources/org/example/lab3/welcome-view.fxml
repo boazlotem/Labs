@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="258.0" prefWidth="378.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.lab2.LoginController">
+<BorderPane prefHeight="258.0" prefWidth="378.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.lab3.LoginController">
    <center>
       <Label fx:id="welcomeLabel" alignment="CENTER" contentDisplay="CENTER" text="Welcome!" textAlignment="CENTER" textFill="RED">
          <font>

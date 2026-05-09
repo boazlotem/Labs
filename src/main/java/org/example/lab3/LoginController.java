@@ -1,4 +1,4 @@
-package org.example.lab2;
+package org.example.lab3;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -37,9 +37,18 @@ public class LoginController {
     private Label usernameLabel;
 
     private List<User> validUsers;
+    private int n;
+    private int time;
 
+    public void setParams(int n, int time)
+    {
+        this.n = n;
+        this.time = time;
+    }
 
-    public void setUsers(List<User> users) {
+    // This method is used to set the list of valid users in the controller. It is called from the UserApp class when the login screen is loaded.
+    public void setUsers(List<User> users)
+    {
         this.validUsers = users;
     }
 
@@ -53,6 +62,7 @@ public class LoginController {
 
             LoginController controller = loader.getController();
             controller.setUsers(UserApp.getUserList());
+            controller.setParams(UserApp.getN(), UserApp.getTime());
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle("Login");
@@ -66,18 +76,38 @@ public class LoginController {
         }
 
     }
+    // This method is used to display an error message on the login screen. It is called from the Validate thread when the login fails.
+    public void showError(String message) {
+        statusLabel.setStyle("-fx-text-fill: red;");
+        statusLabel.setWrapText(true);
+        statusLabel.setText(message);
+    }
+    // This method is used to change the scene to the welcome screen. It is called from the CheckLock thread when the login is successful and the account is not locked.
+    public void changeToWelcomeScreen() {
+        try {
+            FXMLLoader welcome = new FXMLLoader(LoginController.class.getResource("welcome-view.fxml"));
+            Stage stage = (Stage)statusLabel.getScene().getWindow();
+            stage.setTitle("Welcome");
+            Scene scene = new Scene(welcome.load(), 320, 240);
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            statusLabel.setText("Error loading welcome screen");
+        }
+    }
     @FXML
-    // This method is called when the login button is clicked. It checks the entered username and password against the list of valid users and either loads the welcome screen or displays an error message.
-    private void handleLogin(javafx.event.ActionEvent event) {
+    // This method is called when the login button is clicked. It checks if the username and password fields are empty and displays an error message if they are. If both fields are filled, it starts a new Validate thread to check the credentials.
+    private void handleLogin() {
         String inputName = usernameField.getText();
         String inputPassword = passwordField.getText();
-        boolean authenticated = false;
-        // Check if both fields are empty
         if(inputName.isEmpty() && inputPassword.isEmpty())
         {
             statusLabel.setText("Please enter both username and password");
             return;
-        }// Check if either field is empty
+        }
         else if(inputName.isEmpty()) {
             statusLabel.setText("Please enter a username");
             return;
@@ -86,36 +116,7 @@ public class LoginController {
             statusLabel.setText("Please enter a password");
             return;
         }
-
-        // Check if the validUsers list is not null before iterating
-        if (validUsers != null) {
-            for (User u : validUsers) {
-                if (u.getUser_name().equals(inputName) && u.getPassword().equals(inputPassword)) {
-                    authenticated = true;
-                    break;
-                }
-            }
-        }
-        // If authenticated, load the welcome screen, otherwise show an error message
-        if (authenticated) {
-            try {
-                FXMLLoader welcome = new FXMLLoader(LoginController.class.getResource("welcome-view.fxml"));
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setTitle("Welcome");
-                Scene scene = new Scene(welcome.load(), 320, 240);
-                stage.setScene(scene);
-                stage.show();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                statusLabel.setText("Error loading welcome screen");
-            }
-
-        }
-        else {
-            statusLabel.setStyle("-fx-text-fill: red;");
-            statusLabel.setText("Login Failed! Invalid username or password");
-        }
+        Validate validateThread = new Validate(validUsers, inputName, inputPassword, this, n, time);
+        validateThread.start();
     }
 }
